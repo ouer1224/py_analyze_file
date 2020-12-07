@@ -17,60 +17,61 @@ if __name__ == '__main__':
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
-"""
+
+
+
+
+import matplotlib.pyplot as plt
+import  str2num as getnum
+import  can2date as anayid
 import tkinter.filedialog
 
-filename_input=tkinter.filedialog.askopenfilename()
-print(f"filename is {filename_input}")
+
+
+
 """
+向id_analyze放入需要解析的报文
+can_1ceb1009
+can_1ceb2a0c
+"""
+id_analyze=[
+    anayid.can_1ceb1009,
+    anayid.can_1ceb2a0c
+            ];
 
-import matplotlib.pyplot as plt
-import  str2num as ouer
-import  can2date as anayid
+############################################################################################
+############################################################################################
 
-x = []
-y = []
-x1=[]
-y1=[]
-
-plt.figure()
+file_needopen=""#"E:\CANData\CAN0_CHANNEL\CH0_11-25-precharge-errCANData0.txt"
+if(file_needopen==''):
+    filename_input=tkinter.filedialog.askopenfilename()
+    print(f"filename is {filename_input}")
+    file_needopen=filename_input;#"E:\CANData\CAN0_CHANNEL\CH0_11-25-precharge-errCANData0.txt"
 
 
 
-str_to_find="1ceb1009";
-#name_file_needopen="CH0_11-27-1CANData0.txt"
-#dir_file_needopen="/e/CANData/CAN0_CHANNEL"
-file_needopen="E:\CANData\CAN0_CHANNEL\CH0_11-25-precharge-errCANData0.txt"#dir_file_needopen+name_file_needopen;
+figur_x=[]
+figur_y=[]
 
+num= len(id_analyze);
+print(f"---num={num}")
+while num>0:
+    num=num-1;
+    figur_x.append([])
+    figur_y.append([])
 
-str_destfile="./"+str_to_find+".txt"
-dest=open("./all.txt","w+")
-dest.close()
-#dest=open("./dest.txt","w+")
-dest=open(str_destfile,"w+");
-dest.close()
-tmpfile=open("./3.txt","w+");
-tmpfile.close();
 
 with open(file_needopen,'r') as fp:
     list_all=fp.readlines();
-#    for list in list_all:
-#        print(f"{list}")
+
     print(f"{list_all[1]}")
     i=4;
-    #for list in list_all:
-    #    str=list;
+
     num=list_all.__len__();
     print(f"num={num}")
     print(f"last={list_all[num-1]}")
-
-    all_file = open("./all.txt", 'a+')
-    dest_file = open(str_destfile, "a+")
+    
     pos_firstdat=5;
-
-
-    count_need = 0;
-
     while(i<num):
         str1=list_all[i];
         i+=1;
@@ -78,61 +79,38 @@ with open(file_needopen,'r') as fp:
 
         if(ret[2]=='Error'):
             continue
-        #if(ret[1]=='2'):
-        #    all_file.write(str1);
 
-        #anayid.can_1ceb1009(str1);
+        tmp1,tmp2=anayid.can_1ceb1009(str1);
+        if((tmp1==-1)and(tmp2==-1)):
+           continue;
+        else:
+            figur_x[0].append(tmp1);
+            figur_y[0].append(tmp2);
+
+        '''
         if ((ret[2]=="1ceb1009")):
-            x.append(float(ret[0]) / 1000)
-            y.append(ouer.hex2int(ret[pos_firstdat + 0]))
+            figur_x[0].append(float(ret[0]) / 1000)
+            figur_y[0].append(getnum.hex2int(ret[pos_firstdat + 0]))
         elif((ret[2]=='1ceb2a06')):
             continue;
         elif ((ret[2] == '1ceb2a0c')):
-            x1.append(float(ret[0]) / 1000)
-            y1.append(ouer.hex2int(ret[pos_firstdat + 1]))
+            figur_x[1].append(float(ret[0]) / 1000)
+            figur_y[1].append(getnum.hex2int(ret[pos_firstdat + 1]))
         else:
             continue;
-
-        #y.append(hex2int(ret[pos_firstdat + 0])/2.55)
-        sumerr = 0;
         '''
-        sumerr+= hex2int(ret[pos_firstdat+0])
-        sumerr += hex2int(ret[pos_firstdat+1])
-        sumerr += hex2int(ret[pos_firstdat+2])
-        sumerr += hex2int(ret[pos_firstdat+3])
-        sumerr += hex2int(ret[pos_firstdat+4])
-        sumerr += hex2int(ret[pos_firstdat+5])
-        sumerr += hex2int(ret[pos_firstdat+6])
-        sumerr += hex2int(ret[pos_firstdat+7])
-        '''
-        #if(sumerr!=0):
-        #if(ret[pos_firstdat+7]!='02'):
-        #if(ret[pos_firstdat+0]!='06'):
-        #if((ret[pos_firstdat+1]!='01') or (ret[pos_firstdat+0]!='01')):
-        if(True):
-            dest_file.write('***'+str1);
-            count_need+=1;
+    print(f"end,find ---- can data\n")
 
-            #x1.append(float(ret[0]) / 1000)
-            #y1.append(hex2int(ret[pos_firstdat + 0]))
-            #print(f"ret={ret}")
-            #print("%d" % (i))
-        else:
-            dest_file.write(str1);
 
-            #x1.append(float(ret[0]) / 1000)
-            #y1.append(hex2int(ret[pos_firstdat + 0]))
+    plt.figure()
+    #plt.subplot(211);
+    plt.plot(figur_x[0], figur_y[0],'b-', lw =1)
+    #plt.legend(['mode'], ncol=1)
+    #plt.title("mode");
+    #plt.subplot(212);
+    plt.plot(figur_x[1], figur_y[1], 'r-', lw=1)
+    #plt.title("relay");
+    #plt.legend(['relay'], ncol=1)
 
-    print(f"end,find --- {count_need} -- can data\n")
-    all_file.close();
-    dest_file.close();
-    plt.subplot(211);
-    plt.plot(x, y,'b-', lw =1)
-    plt.legend(['mode'], ncol=1)
-    plt.title("mode");
-    plt.subplot(212);
-    plt.plot(x1, y1, 'r-', lw=1)
-    plt.title("relay");
-    plt.legend(['relay'], ncol=1)
-
+    plt.legend(['mode','relay'],ncol=2);
     plt.show()
