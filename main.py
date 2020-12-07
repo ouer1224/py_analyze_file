@@ -29,11 +29,12 @@ import tkinter.filedialog
 
 
 
-"""
-向id_analyze放入需要解析的报文
+'''
+put the canid into id_analyze
+eg:
 can_1ceb1009
 can_1ceb2a0c
-"""
+'''
 id_analyze=[
     anayid.can_1ceb1009,
     anayid.can_1ceb2a0c
