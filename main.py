@@ -5,7 +5,6 @@
 
 
 
-
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
@@ -36,14 +35,18 @@ can_1ceb1009
 can_1ceb2a0c
 '''
 id_analyze=[
-    anayid.can_1ceb1009,
-    anayid.can_1ceb2a0c
+#    anayid.can_0x1ceb1009,
+    anayid.can_getInsAD0,
+    anayid.can_getInsAD1,
+    anayid.can_0x1ceb2a2e,
+    anayid.can_getInsTime,
+    anayid.can_getInsVal
             ];
 
 ############################################################################################
 ############################################################################################
 
-file_needopen=""#"E:\CANData\CAN0_CHANNEL\CH0_11-25-precharge-errCANData0.txt"
+file_needopen='E:/tmp2/CH0_1222020-12-18_16-36-38(1).csv'
 if(file_needopen==''):
     filename_input=tkinter.filedialog.askopenfilename()
     print(f"filename is {filename_input}")
@@ -77,16 +80,49 @@ with open(file_needopen,'r') as fp:
         str1=list_all[i];
         i+=1;
         ret=str1.split();
-
+        #print(f"ret={ret}")
         if(ret[2]=='Error'):
             continue
 
-        tmp1,tmp2=anayid.can_1ceb1009(str1);
+        #print(f"id={ret[2]}")
+
+        tmp1,tmp2=anayid.can_getInsAD0(str1);
         if((tmp1==-1)and(tmp2==-1)):
-           continue;
+           #continue;
+            tmp1=0;
         else:
             figur_x[0].append(tmp1);
             figur_y[0].append(tmp2);
+
+        tmp1,tmp2=anayid.can_getInsTime(str1);
+        if((tmp1==-1)and(tmp2==-1)):
+           #continue;
+            tmp1=0;
+        else:
+            figur_x[1].append(tmp1);
+            figur_y[1].append(tmp2);
+
+        tmp1,tmp2=anayid.can_0x1ceb2a2e(str1);
+        if((tmp1==-1)and(tmp2==-1)):
+           tmp1=0;
+        else:
+            figur_x[2].append(tmp1);
+            figur_y[2].append(tmp2);
+
+        tmp1,tmp2=anayid.can_getInsVal(str1);
+        if((tmp1==-1)and(tmp2==-1)):
+           tmp1=0;
+        else:
+            figur_x[3].append(tmp1);
+            figur_y[3].append(tmp2);
+            #print(f"insval={tmp2}")
+        tmp1,tmp2=anayid.can_getInsAD1(str1);
+        if((tmp1==-1)and(tmp2==-1)):
+           #continue;
+            tmp1=0;
+        else:
+            figur_x[4].append(tmp1);
+            figur_y[4].append(tmp2);
 
         '''
         if ((ret[2]=="1ceb1009")):
@@ -104,14 +140,20 @@ with open(file_needopen,'r') as fp:
 
 
     plt.figure()
-    #plt.subplot(211);
-    plt.plot(figur_x[0], figur_y[0],'b-', lw =1)
+    plt.subplot(411);
+    plt.plot(figur_x[0], figur_y[0],'m-', lw =1)
     #plt.legend(['mode'], ncol=1)
     #plt.title("mode");
     #plt.subplot(212);
-    plt.plot(figur_x[1], figur_y[1], 'r-', lw=1)
+  #  plt.plot(figur_x[1], figur_y[1], 'g-', lw=1)
     #plt.title("relay");
     #plt.legend(['relay'], ncol=1)
+    plt.subplot(412);
+    plt.plot(figur_x[4], figur_y[4], 'y-', lw=1)
+    plt.subplot(413);
+    plt.plot(figur_x[2], figur_y[2], 'k-', lw=1)
+    plt.subplot(414);
+    plt.plot(figur_x[3], figur_y[3], 'm-', lw=1)
 
-    plt.legend(['mode','relay'],ncol=2);
+ #   plt.legend(['mode','relay'],ncol=2);
     plt.show()
