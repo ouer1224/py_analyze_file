@@ -139,17 +139,207 @@ with open('./test.html','w+') as fp:
     fp.write(r.text)
 '''
 
-
+'''
 ####正则表达式,提取猫眼的top100
 myheaders={'User-Agent':'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10'}
-r=requests.get("https://book.douban.com/latest?icn=index-latestbook-all",headers=myheaders)
+r=requests.get("https://www.bqkan.com/1_1094/5403177.html",headers=myheaders)
 if(r.status_code==200):
     print(r.status_code)
     r.encoding=r.apparent_encoding;
     #print(r.text)
     fp=open('./test.html','w+',encoding='utf-8')
-    fp.write(r.text)
+    demo = r.text
+    soup = BeautifulSoup(demo, "html.parser")
+    fp.write(soup.prettify())
     fp.close();
+    txts=soup.find_all('div',id="content", class_='showtxt');
+    print(f"noval txt=\n {txts}");
+    print(f"end txt=\n {txts[0].text}")
+    text=txts[0].text;
+    t=text.replace('\xa0'*3,'\n');
+    print(f'end = \n {t}')
 else:
     print(f"failed!!!={r.status_code}")
+
+'''
+
+'''
+####正则表达式,提取笔趣阁
+myheaders={'User-Agent':'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10'}
+r=requests.get("https://www.bqkan.com/1_1094/5403177.html",headers=myheaders)
+if(r.status_code==200):
+    print(r.status_code)
+    r.encoding=r.apparent_encoding;
+    fp=open('./test.html','w+',encoding='utf-8')
+    demo = r.text
+    soup = BeautifulSoup(demo, "html.parser")
+    txts = soup.prettify();
+    fp.write(txts)
+    fp.close();
+
+'''
+
+'''
+txts="""
+ <div class="showtxt" id="content">
+     <script>
+      app2();
+     </script>
+     <br/>
+     <script>
+      read2();
+     </script>
+     帽儿山，位于东林山脉中，山下有一个村子，民风淳朴，以耕田为生，与世隔绝。
+     <br/>
+     <br/>
+     <br/>
+     <br/>
+     “这不怨我啊，你那什么破香啊，每次点燃都会打雷，好几次都差点霹死我，我躲过了十三次，已经很不容易了。”白小纯可怜兮兮的说道。
+     <br/>
+     <br/>
+     中年修士看着白小纯，半晌无语。
+     <br/>
+     <br/>
+     “既然你这么害怕，为什么还要强行去点香十多次？”中年修士缓缓开口。
+     <br/>
+     <br/>
+     “我怕死啊，修仙不是能长生么，我想长生啊。”白小纯委屈的说道。
+     <br/>
+     <br/>
+     中年修士再次无语，不过觉得此子总算执念可嘉，扔到门派里磨炼一番，或可在性子上改变一二。
+     <br/>
+     <br/>
+     于是略一思索，大袖一甩卷着白小纯化作一道长虹，直奔天边而去。
+     <br/>
+     <br/>
+     “跟我走吧。”
+     <br/>
+     <br/>
+     “去哪？这也太高了吧……”白小纯看到自己在天上飞，下面是万丈深渊，立刻脸色苍白，斧头一扔，死死的抱住仙人的大腿。
+     <br/>
+     <br/>
+     中年修士看了眼自己的腿，无奈开口。
+     <br/>
+     <br/>
+     “灵溪宗。”
+     <br/>
+     <br/>
+     兄弟姐妹们，阔别2个月，你们想不想我啊，我非常想你们！
+     <br/>
+     <br/>
+     这本书，我做了详细的大纲，每次回顾大纲里的情节，都很兴奋，有种燃烧的感觉，我非常满意，明天，正式更新，依旧是中午一章，晚上一章！
+     <br/>
+     <br/>
+     很兴奋，我们已沉寂了数月，如今归来，要……再战起点！
+     <br/>
+     <br/>
+     新书期，兄弟姐妹，别忘了收藏与推荐啊，收藏与推荐至关重要！
+     <br/>
+     <br/>
+     求收藏！！求推荐！！
+     <br/>
+     <br/>
+     让众人知晓，我们……归来了！
+     <br/>
+     <br/>
+     我们的目标，依旧是……点击榜，推荐榜，第一！xh:.181.241.250
+     <br/>
+     <script>
+      app2();
+     </script>
+     <br/>
+     <br/>
+     (https://www.bqkan.com/1_1094/5403177.html)
+     <br/>
+     <br/>
+     <script>
+      chaptererror();
+     </script>
+     <br/>
+     请记住本书首发域名：www.bqkan.com。笔趣阁手机版阅读网址：m.bqkan.com
+    </div>     
+"""
+pattern=r'class="showtxt" id="content"(.*?)</div>'
+searchObj =re.search(pattern,txts,re.DOTALL|re.M|re.I);
+content=searchObj.group();
+print(content)
+
+pattern=r'<br/>(.*?)<br/>'
+searchObj =re.search(pattern,content,re.S)#re.DOTALL|re.M|re.I);
+text=searchObj.group(0);
+#print(f"text={text}")
+
+res=re.findall(pattern,content,re.S)
+#print(f"{type(res)}")
+#print(f"{res}")
+#print(''.join(res))
+
+'''
+
+
+
+
+####正则表达式,提取笔趣阁
+myheaders={'User-Agent':'Mozilla/5.0 (X11; U; Linux x86_64; zh-CN; rv:1.9.2.10) Gecko/20100922 Ubuntu/10.10 (maverick) Firefox/3.6.10'}
+r=requests.get("https://www.bqkan.com/1_1094/",headers=myheaders)
+if(r.status_code==200):
+    print(r.status_code)
+    r.encoding=r.apparent_encoding;
+    fp=open('./test.html','w+',encoding='utf-8')
+    demo = r.text
+    soup = BeautifulSoup(demo, "html.parser")
+    txts = soup.prettify();
+    fp.write(txts)
+    fp.close();
+
+    fp=open('./list.txt','w+',encoding='utf-8')
+    pattern=r'<div class="listmain">(.*?)</div>';
+    res=re.findall(pattern,txts,re.S);
+    #print(f"res={res}")
+    str1=res[0];
+    fp.write(str1)
+    fp.close();
+
+    with open('./list_no_dd.txt','w+',encoding='utf-8') as fp:
+        pattern=r'<a (.*?)</a>';
+        res=re.findall(pattern,str1,re.S);
+        print(len(res))
+        fp_listend=open('./list_end.txt','w+',encoding='utf-8');
+        flag_save=0;
+        for i in res:
+            fp.write(i)
+            tmp_res=i.split();
+            print(tmp_res)
+            stra=tmp_res[0];
+            pattern=r'href="(.*?)">'
+            ref=re.findall(pattern,stra,re.S);
+            print(ref[0]+' '+' '.join(tmp_res[1:]))
+            if(tmp_res[1]=='章节目录'):
+                flag_save=1;
+                continue;
+            pattern=r'第(.*?)章'
+            strb=tmp_res[1];
+            matchobj=re.match(pattern,strb);
+
+            if matchobj==None:
+                continue;
+            if(flag_save==1):
+                fp_listend.write('https://www.bqkan.com'+ref[0]+' '+' '.join(tmp_res[1:])+'\n')
+
+        fp_listend.close()
+
+else:
+    print("failed to request")
+
+
+
+
+
+
+
+
+
+
+
+
 
