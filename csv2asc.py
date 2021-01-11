@@ -3,7 +3,24 @@
 
 import tkinter.filedialog
 
+
+def getTimeFromCsv(string):
+    time=0;
+
+    tmp_str = string.split('_');
+    strtime = tmp_str[1].split(':');
+#   print(f"strtime={strtime}")
+#    print(f'\nstrtime={strtime}')
+#    print(f'\n{int(strtime[0])*3600}')
+ #   print(f'\n{int(strtime[1])*60}')
+ #   print(f'\n{float(strtime[2])}')
+    time = (int(strtime[0]))*3600 + (int(strtime[1]))*3600+ float(strtime[2]);
+ #   print(f"time={time}")
+    return time;
+
 filename_input = tkinter.filedialog.askopenfilename()
+#filename_input=r"C:\Users\Administrator\Desktop\CH1_1232021-01-07_10-29-10.csv"
+
 print(f"filename is {filename_input}")
 file_needopen = filename_input;
 
@@ -41,28 +58,33 @@ with open(file_needopen,'r') as fp:
     pos_firstdat = 5;
     i=0;
     time_begin=0;
-    str1=list_all[0];
-    ret=str1.split();
-    time_begin=float(ret[0]);
+    str1=list_all[1];
+
+    print(f'\nstr1={str1}\n')
+
+    time_begin=getTimeFromCsv(str1.split(',')[0]);
+    print(f"time_begin={'%.3f'%time_begin}")
+    strtime=[]
+
+    i=1;
     while i<num:
         str1=list_all[i];
         i=i+1;
 
-        ret=str1.split();
+        ret=str1.split(',');
+        #if((ret[2]=='0x60000000')):
+         #   continue;
+
         retdest=[];
-        #retdest[0:2]=ret[0:2];
-        tmp_str=str((float(ret[0])-time_begin)/1000);
-        tmp_ret=tmp_str.split('.');
-        tmp_str=tmp_ret[0]+'.'+tmp_ret[1][:3]
+        time_line=getTimeFromCsv(ret[0]);
+        time_line-=time_begin;
+        tmp_str='%.3f'%(time_line);
         retdest.append(tmp_str);
         retdest.append('1');
         retdest.append(ret[2]);
-        #retdest[3]='Rx';
         retdest.insert(3,'Rx');
-        #retdest[4]='d'
         retdest.insert(4, 'd');
-        #retdest[5:14]=ret[4:13];
-        retdest[5:]=retdest[4:]
+        retdest[5:]=ret[4:]
 
         if(i==1):
             print(f"ret[1]={retdest[5:]}")
@@ -72,7 +94,8 @@ with open(file_needopen,'r') as fp:
         else:
             retdest[2]=retdest[2][2:]+'x';
 
-        if (len(retdest[2]) != 9):
+        if (len(retdest[2]) != 9) or (retdest[2][:-1]=='60000000'):
+            retdest=[];
             continue;
 
         retdest.append('\n');
@@ -82,7 +105,6 @@ with open(file_needopen,'r') as fp:
         rettmp=[];
         rettmp=retdest[6:];
         str2=' '.join(retdest[6:])
-
         fpdest.write(str1+str2)
 
 
