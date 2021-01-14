@@ -94,7 +94,8 @@ with open(file_needopen,'r') as fp:
         else:
             retdest[2]=retdest[2][2:]+'x';
 
-        if (len(retdest[2]) != 9) or (retdest[2][:-1]=='60000000'):
+        #if (len(retdest[2]) != 9) or (retdest[2][:-1]=='60000000'):
+        if (retdest[2][:-1] == '60000000'):
             retdest=[];
             continue;
 
